@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mankhush's — Video Editor Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#0A0A0B;
+    --charcoal:#1C1A18;
+    --card:#242220;
+    --off-white:#F5F3EE;
+    --muted:#A8A29A;
+    --red:#8B1E1E;
+    --red-bright:#B32B2B;
+    --gold:#C9A961;
+    --border:#33302C;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--black);
+    color:var(--off-white);
+    font-family:'Inter',sans-serif;
+    overflow-x:hidden;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important; scroll-behavior:auto !important;}
+  }
+
+  a{color:inherit; text-decoration:none;}
+  .display{font-family:'Bebas Neue',sans-serif; letter-spacing:0.02em;}
+
+  /* Sprocket strip */
+  .sprockets{
+    position:fixed; top:0; left:0; width:14px; height:100vh;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0, transparent 22px,
+      var(--border) 22px, var(--border) 24px
+    );
+    opacity:0.5;
+    z-index:5;
+  }
+  .sprockets.right{left:auto; right:0;}
+
+  /* NAV */
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:24px 48px;
+    background:linear-gradient(to bottom, rgba(10,10,11,0.95), transparent);
+  }
+  .logo{font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:0.08em;}
+  .logo span{color:var(--red-bright);}
+  .nav-links{display:flex; gap:36px;}
+  .nav-links a{
+    font-size:13px; letter-spacing:0.04em; color:var(--muted);
+    transition:color 0.25s ease;
+    position:relative;
+  }
+  .nav-links a:hover, .nav-links a:focus-visible{color:var(--off-white);}
+  .nav-links a::after{
+    content:''; position:absolute; bottom:-4px; left:0; width:0; height:1px;
+    background:var(--red-bright); transition:width 0.25s ease;
+  }
+  .nav-links a:hover::after{width:100%;}
+
+  /* HERO */
+  .hero{
+    min-height:100vh;
+    display:flex; flex-direction:column; justify-content:center;
+    padding:0 48px;
+    position:relative;
+    border-bottom:1px solid var(--border);
+  }
+  .hero-frame-label{
+    font-size:12px; color:var(--muted); letter-spacing:0.15em;
+    margin-bottom:24px; display:flex; gap:16px; align-items:center;
+  }
+  .hero-frame-label::before{
+    content:''; width:36px; height:1px; background:var(--red-bright);
+  }
+  .hero h1{
+    font-size:clamp(64px, 12vw, 168px);
+    line-height:0.88;
+    font-weight:400;
+    color:var(--off-white);
+  }
+  .hero h1 .red{color:var(--red-bright);}
+  .hero-sub{
+    max-width:520px; margin-top:28px;
+    font-size:17px; line-height:1.6; color:var(--muted);
+    font-weight:400;
+  }
+  .hero-meta{
+    display:flex; gap:48px; margin-top:56px; flex-wrap:wrap;
+  }
+  .hero-meta div{border-left:1px solid var(--border); padding-left:16px;}
+  .hero-meta .num{font-family:'Bebas Neue',sans-serif; font-size:36px; color:var(--off-white); line-height:1;}
+  .hero-meta .label{font-size:12px; color:var(--muted); margin-top:6px;}
+
+  .timecode{
+    position:absolute; bottom:40px; right:48px;
+    font-family:'Inter',monospace; font-size:12px; color:var(--muted);
+    letter-spacing:0.05em;
+  }
+
+  /* SECTION HEADERS */
+  .section{padding:120px 48px;}
+  .section-head{
+    display:flex; justify-content:space-between; align-items:flex-end;
+    margin-bottom:64px; flex-wrap:wrap; gap:24px;
+    border-bottom:1px solid var(--border);
+    padding-bottom:24px;
+  }
+  .section-head h2{
+    font-size:clamp(36px,5vw,56px); font-weight:400; line-height:1;
+  }
+  .section-num{
+    font-family:'Bebas Neue',sans-serif; font-size:15px; color:var(--red-bright);
+    letter-spacing:0.1em;
+  }
+
+  /* WORK GRID — filmstrip style */
+  .work-grid{
+    display:grid; grid-template-columns:1fr; gap:2px;
+    background:var(--border);
+  }
+  .reel-card{
+    background:var(--black);
+    display:grid; grid-template-columns:120px 1fr;
+    align-items:stretch;
+    transition:background 0.3s ease;
+    cursor:pointer;
+  }
+  .reel-card:hover{background:var(--charcoal);}
+  .reel-index{
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Bebas Neue',sans-serif; font-size:20px; color:var(--muted);
+    border-right:1px solid var(--border);
+    padding:32px 0;
+  }
+  .reel-body{
+    padding:36px 40px;
+    display:grid; grid-template-columns:1.4fr 1fr auto; gap:32px; align-items:center;
+  }
+  .reel-thumb{
+    aspect-ratio:21/9;
+    background:
+      repeating-linear-gradient(90deg, transparent 0 3px, rgba(0,0,0,0.35) 3px 4px),
+      linear-gradient(135deg, var(--card), #15130f);
+    border:1px solid var(--border);
+    position:relative;
+    display:flex; align-items:center; justify-content:center;
+    order:1;
+  }
+  .reel-thumb::before{
+    content:'▶';
+    color:var(--off-white);
+    font-size:18px;
+    opacity:0.55;
+  }
+  .reel-info{order:2;}
+  .reel-info h3{font-size:24px; font-weight:600; margin-bottom:8px;}
+  .reel-info p{font-size:14px; color:var(--muted); line-height:1.5;}
+  .reel-tags{order:3; display:flex; flex-direction:column; gap:6px; align-items:flex-end; text-align:right;}
+  .tag{
+    font-size:11px; letter-spacing:0.04em; color:var(--gold);
+    border:1px solid rgba(201,169,97,0.35);
+    padding:4px 10px;
+    white-space:nowrap;
+  }
+  .reel-duration{font-size:12px; color:var(--muted); font-family:monospace;}
+
+  @media (max-width:800px){
+    .reel-card{grid-template-columns:56px 1fr;}
+    .reel-body{grid-template-columns:1fr; gap:16px;}
+    .reel-tags{align-items:flex-start; text-align:left; flex-direction:row; flex-wrap:wrap;}
+  }
+
+  /* SKILLS — scrubber bar style */
+  .skills-bar{
+    display:flex; flex-direction:column; gap:0;
+    border-top:1px solid var(--border);
+  }
+  .skill-row{
+    display:grid; grid-template-columns:220px 1fr 60px;
+    align-items:center; gap:24px;
+    padding:22px 0;
+    border-bottom:1px solid var(--border);
+  }
+  .skill-name{font-size:16px; font-weight:500;}
+  .skill-track{
+    height:2px; background:var(--border); position:relative;
+  }
+  .skill-fill{
+    position:absolute; left:0; top:0; height:100%;
+    background:var(--red-bright);
+  }
+  .skill-fill::after{
+    content:''; position:absolute; right:-4px; top:50%; transform:translateY(-50%);
+    width:8px; height:8px; border-radius:50%; background:var(--gold);
+  }
+  .skill-pct{font-size:13px; color:var(--muted); text-align:right; font-family:monospace;}
+
+  /* ABOUT */
+  .about{
+    display:grid; grid-template-columns:1fr 1.3fr; gap:64px;
+  }
+  .about-frame{
+    aspect-ratio:4/5;
+    background:linear-gradient(160deg, var(--card), #100f0d);
+    border:1px solid var(--border);
+    position:relative;
+    display:flex; align-items:flex-end; padding:24px;
+  }
+  .about-frame span{font-size:12px; color:var(--muted); letter-spacing:0.08em;}
+  .about-text p{font-size:17px; line-height:1.75; color:var(--muted); margin-bottom:20px; max-width:65ch;}
+  .about-text strong{color:var(--off-white); font-weight:600;}
+
+  /* CONTACT */
+  .contact{
+    text-align:left;
+    border-top:1px solid var(--border);
+  }
+  .contact h2{
+    font-size:clamp(40px,8vw,96px); font-weight:400; line-height:1; margin-bottom:32px;
+  }
+  .contact-email{
+    display:inline-block; font-size:20px; color:var(--off-white);
+    border-bottom:1px solid var(--red-bright);
+    padding-bottom:4px; margin-bottom:56px;
+    transition:color 0.25s ease, border-color 0.25s ease;
+  }
+  .contact-email:hover{color:var(--red-bright); border-color:var(--gold);}
+  .contact-links{display:flex; gap:32px; flex-wrap:wrap;}
+  .contact-links a{font-size:13px; color:var(--muted); letter-spacing:0.04em;}
+  .contact-links a:hover{color:var(--off-white);}
+
+  footer{
+    padding:32px 48px; display:flex; justify-content:space-between;
+    font-size:12px; color:var(--muted); border-top:1px solid var(--border);
+    flex-wrap:wrap; gap:12px;
+  }
+
+  ::selection{background:var(--red-bright); color:var(--off-white);}
+  a:focus-visible, button:focus-visible{outline:2px solid var(--gold); outline-offset:3px;}
+</style>
+</head>
+<body>
+
+<div class="sprockets"></div>
+<div class="sprockets right"></div>
+
+<nav>
+  <div class="logo">MANKHUSH<span>/</span>REEL</div>
+  <div class="nav-links">
+    <a href="#work">Work</a>
+    <a href="#skills">Skills</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-frame-label">FRAME 001 — SHOWREEL</div>
+  <h1>MAN<br>KHUSH<span class="red">.</span></h1>
+  <p class="hero-sub">Video editor cutting narrative, commercial, and music work. I build rhythm out of footage — pacing, color, and sound working as one instrument.</p>
+  <div class="hero-meta">
+    <div><div class="num">7</div><div class="label">Years Cutting</div></div>
+    <div><div class="num">120+</div><div class="label">Projects Delivered</div></div>
+    <div><div class="num">4K/60</div><div class="label">Native Delivery</div></div>
+  </div>
+  <div class="timecode">00:00:00:00 — PLAY</div>
+</section>
+
+<section class="section" id="work">
+  <div class="section-head">
+    <h2>Selected Work</h2>
+    <div class="section-num">REEL / 01</div>
+  </div>
+  <div class="work-grid">
+
+    <div class="reel-card">
+      <div class="reel-index">01</div>
+      <div class="reel-body">
+        <div class="reel-thumb"></div>
+        <div class="reel-info">
+          <h3>Midnight Freight — Short Film</h3>
+          <p>Narrative drama, festival cut. Non-linear structure built in the edit from three timelines of coverage.</p>
+        </div>
+        <div class="reel-tags">
+          <span class="tag">NARRATIVE</span>
+          <span class="tag">COLOR GRADE</span>
+          <span class="reel-duration">14:32</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="reel-card">
+      <div class="reel-index">02</div>
+      <div class="reel-body">
+        <div class="reel-thumb"></div>
+        <div class="reel-info">
+          <h3>Solstice — Running Shoe Launch</h3>
+          <p>60-second commercial spot. Match-cut driven pacing timed to an original score.</p>
+        </div>
+        <div class="reel-tags">
+          <span class="tag">COMMERCIAL</span>
+          <span class="tag">SOUND DESIGN</span>
+          <span class="reel-duration">0:60</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="reel-card">
+      <div class="reel-index">03</div>
+      <div class="reel-body">
+        <div class="reel-thumb"></div>
+        <div class="reel-info">
+          <h3>Static Bloom — Music Video</h3>
+          <p>Performance and abstract footage interleaved to a shifting time signature.</p>
+        </div>
+        <div class="reel-tags">
+          <span class="tag">MUSIC VIDEO</span>
+          <span class="tag">VFX COMP</span>
+          <span class="reel-duration">3:41</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="reel-card">
+      <div class="reel-index">04</div>
+      <div class="reel-body">
+        <div class="reel-thumb"></div>
+        <div class="reel-info">
+          <h3>Ground Truth — Documentary Series Ep.1</h3>
+          <p>Verite footage shaped into a three-act structure across 40 hours of source material.</p>
+        </div>
+        <div class="reel-tags">
+          <span class="tag">DOCUMENTARY</span>
+          <span class="tag">STORY EDIT</span>
+          <span class="reel-duration">22:10</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="section" id="skills">
+  <div class="section-head">
+    <h2>Toolkit</h2>
+    <div class="section-num">REEL / 02</div>
+  </div>
+  <div class="skills-bar">
+    <div class="skill-row">
+      <div class="skill-name">Premiere Pro</div>
+      <div class="skill-track"><div class="skill-fill" style="width:95%"></div></div>
+      <div class="skill-pct">95%</div>
+    </div>
+    <div class="skill-row">
+      <div class="skill-name">DaVinci Resolve — Color</div>
+      <div class="skill-track"><div class="skill-fill" style="width:88%"></div></div>
+      <div class="skill-pct">88%</div>
+    </div>
+    <div class="skill-row">
+      <div class="skill-name">After Effects — Compositing</div>
+      <div class="skill-track"><div class="skill-fill" style="width:78%"></div></div>
+      <div class="skill-pct">78%</div>
+    </div>
+    <div class="skill-row">
+      <div class="skill-name">Sound Design & Mix</div>
+      <div class="skill-track"><div class="skill-fill" style="width:82%"></div></div>
+      <div class="skill-pct">82%</div>
+    </div>
+    <div class="skill-row">
+      <div class="skill-name">Story Structure & Pacing</div>
+      <div class="skill-track"><div class="skill-fill" style="width:97%"></div></div>
+      <div class="skill-pct">97%</div>
+    </div>
+  </div>
+</section>
+
+<section class="section about" id="about">
+  <div class="about-frame"><span>PORTRAIT — CAM 02</span></div>
+  <div class="about-text">
+    <div class="section-num" style="margin-bottom:20px; display:block;">REEL / 03 — ABOUT</div>
+    <p>I started editing on a laptop in a college dorm room, cutting skate videos down to the frame that mattered. <strong>Seven years later</strong> the footage has changed — commercials, documentaries, narrative shorts — but the job hasn't: find the cut that makes the audience feel something before they know why.</p>
+    <p>I work closely with directors and DPs from dailies through final delivery, and I'm comfortable owning color, sound design, and finishing when a project needs a single hand across the whole post pipeline.</p>
+    <p>Based in Los Angeles. Available for remote and on-site projects worldwide.</p>
+  </div>
+</section>
+
+<section class="section contact" id="contact">
+  <div class="section-num" style="display:block; margin-bottom:20px;">REEL / 04 — CONTACT</div>
+  <h2>Let's cut<br>something.</h2>
+  <a class="contact-email" href="mailto:hello@mayachen.edit">hello@mayachen.edit</a>
+  <div class="contact-links">
+    <a href="#">Vimeo</a>
+    <a href="#">Instagram</a>
+    <a href="#">LinkedIn</a>
+    <a href="#">IMDb</a>
+  </div>
+</section>
+
+<footer>
+  <div>© 2026 Maya Chen. All footage property of respective clients.</div>
+  <div>FRAME OUT — 00:04:12:00</div>
+</footer>
+
+</body>
+</html>
